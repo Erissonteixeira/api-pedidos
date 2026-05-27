@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
@@ -31,5 +33,23 @@ public class ClienteService {
         Cliente clienteSalvo = clienteRepository.save(cliente);
 
         return ClienteMapper.toDto(clienteSalvo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClienteResponseDto> listar() {
+
+        return clienteRepository.findAll()
+                .stream()
+                .map(ClienteMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ClienteResponseDto buscarPorId(Long id) {
+
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+
+        return ClienteMapper.toDto(cliente);
     }
 }
