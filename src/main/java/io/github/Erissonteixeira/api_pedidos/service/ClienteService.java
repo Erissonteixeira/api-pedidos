@@ -52,4 +52,29 @@ public class ClienteService {
 
         return ClienteMapper.toDto(cliente);
     }
+
+    @Transactional
+    public ClienteResponseDto atualizar(Long id, ClienteRequestDto dto) {
+
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+
+        cliente.setNome(dto.nome());
+        cliente.setEmail(dto.email());
+        cliente.setCpf(dto.cpf());
+        cliente.setTelefone(dto.telefone());
+
+        Cliente clienteAtualizado = clienteRepository.save(cliente);
+
+        return ClienteMapper.toDto(clienteAtualizado);
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+
+        clienteRepository.delete(cliente);
+    }
 }
