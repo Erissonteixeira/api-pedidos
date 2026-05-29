@@ -7,10 +7,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
@@ -27,5 +26,21 @@ public class ClienteController {
         ClienteResponseDto cliente = clienteService.criar(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(cliente);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClienteResponseDto>> listar() {
+
+        List<ClienteResponseDto> clientes = clienteService.listar();
+
+        return ResponseEntity.ok(clientes);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponseDto> buscarPorId(
+            @PathVariable Long id
+    ) {
+        ClienteResponseDto cliente = clienteService.buscarPorId(id);
+        return ResponseEntity.ok(cliente);
     }
 }
