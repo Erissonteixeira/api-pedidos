@@ -3,6 +3,8 @@ package io.github.Erissonteixeira.api_pedidos.service;
 import io.github.Erissonteixeira.api_pedidos.dto.cliente.ClienteRequestDto;
 import io.github.Erissonteixeira.api_pedidos.dto.cliente.ClienteResponseDto;
 import io.github.Erissonteixeira.api_pedidos.entity.Cliente;
+import io.github.Erissonteixeira.api_pedidos.exception.BusinessException;
+import io.github.Erissonteixeira.api_pedidos.exception.ResourceNotFoundException;
 import io.github.Erissonteixeira.api_pedidos.mapper.ClienteMapper;
 import io.github.Erissonteixeira.api_pedidos.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +23,11 @@ public class ClienteService {
     public ClienteResponseDto criar(ClienteRequestDto dto) {
 
         if (clienteRepository.existsByEmail(dto.email())) {
-            throw new IllegalArgumentException("Email já cadastrado");
+            throw new BusinessException("Email já cadastrado");
         }
 
         if (clienteRepository.existsByCpf(dto.cpf())) {
-            throw new IllegalArgumentException("CPF já cadastrado");
+            throw new BusinessException("CPF já cadastrado");
         }
 
         Cliente cliente = ClienteMapper.toEntity(dto);
@@ -48,7 +50,7 @@ public class ClienteService {
     public ClienteResponseDto buscarPorId(Long id) {
 
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         return ClienteMapper.toDto(cliente);
     }
@@ -57,7 +59,7 @@ public class ClienteService {
     public ClienteResponseDto atualizar(Long id, ClienteRequestDto dto) {
 
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         cliente.setNome(dto.nome());
         cliente.setEmail(dto.email());
@@ -73,7 +75,7 @@ public class ClienteService {
     public void deletar(Long id) {
 
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
         clienteRepository.delete(cliente);
     }
